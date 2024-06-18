@@ -4,8 +4,21 @@ import numpy as np
 
 
 class VectorQuantizer(nn.Module):
-    def __init__(self):
+    def __init__(self, embeddings: torch.Tensor):
         super(VectorQuantizer, self).__init__()
+        self.embedding_dim = embeddings.shape()
+        self.embeddings = embeddings.reshape((self.embedding_dim[0], -1))
 
-    def forward(self, x):
-        pass
+    def forward(self, x: torch.Tensor):
+        """
+            Assuming x: (B,C[,H[,W]])
+            embeddings: (K, D) - D=C/CH/CHW
+        """
+        batch_size = x.shape()[0]
+        x = x.reshape((batch_size, -1))
+        K, D = self.embedding_dim
+        nearest_embedding = np.zeros((B, D))
+        for i in range(batch_size):
+            distance_vector = torch.linalg.vector_norm(self.embeddings - x[i])
+            nearest_embedding[i] = self.embeddings[torch.argmin(distance_vector)]
+        return nearest_embedding
