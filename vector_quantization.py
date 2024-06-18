@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-import numpy as np
 
 
 class VectorQuantizer(nn.Module):
@@ -17,7 +16,7 @@ class VectorQuantizer(nn.Module):
         batch_size = x.shape[0]
         x = x.reshape((batch_size, -1))
         K, D = self.embedding_dim
-        nearest_embedding = np.zeros((B, D))
+        nearest_embedding = torch.zeros((B, D))
         for i in range(batch_size):
             distance_vector = torch.linalg.vector_norm(self.embeddings - x[i], dim=1)
             nearest_embedding[i] = self.embeddings[torch.argmin(distance_vector)]
